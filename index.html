@@ -13,15 +13,25 @@
         <div class="card p-4">
             <div class="mb-3">
                 <label for="urlInput" class="form-label">Enter URL</label>
-                <textarea class="form-control" id="urlInput" rows="5" placeholder="Paste your URLs here..."></textarea>
+                <textarea class="form-control" id="urlInput" style="height: auto;" placeholder="Paste your URLs here..."></textarea>
             </div>
             <button class="btn btn-primary" id="processButton">Process URLs</button>
+            <button class="btn btn-secondary ms-2" id="copyButton">Copy to Clipboard</button>
             <h5 class="mt-4">Final URLs:</h5>
-            <textarea class="form-control mt-2" id="outputArea" rows="5" readonly></textarea>
+            <textarea class="form-control mt-2" id="outputArea" style="height: auto;" readonly></textarea>
         </div>
     </div>
 
     <script>
+        const adjustTextareaHeight = (textarea) => {
+            textarea.style.height = 'auto';
+            textarea.style.height = textarea.scrollHeight + 'px';
+        };
+
+        document.getElementById('urlInput').addEventListener('input', function () {
+            adjustTextareaHeight(this);
+        });
+
         document.getElementById('processButton').addEventListener('click', function () {
             const inputArea = document.getElementById('urlInput');
             const outputArea = document.getElementById('outputArea');
@@ -32,13 +42,21 @@
             // Process each URL
             const processedUrls = urls.map(url => {
                 if (url.includes('vn')) {
-                    return url.replace('vn', '');
+                    return url.replace(/\.vn/, '');
                 }
                 return url;
             });
 
             // Join processed URLs and display in output area
             outputArea.value = processedUrls.join('\n');
+            adjustTextareaHeight(outputArea);
+        });
+
+        document.getElementById('copyButton').addEventListener('click', function () {
+            const outputArea = document.getElementById('outputArea');
+            outputArea.select();
+            document.execCommand('copy');
+            alert('Final URLs copied to clipboard!');
         });
     </script>
 </body>
